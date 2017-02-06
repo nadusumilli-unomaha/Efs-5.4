@@ -82,14 +82,22 @@
                 <?php $StockValue = floatval($stock->purchase_price) * floatval($stock->shares);?>
                 <td>
                     <?php
-                        $URL = "http://dev.markitondemand.com/Api/v2/Quote?symbol=".urlencode($stock->symbol);
+                        $URL="http://finance.google.com/finance/info?client=ig&q=" . $stock->symbol;
                         $file = fopen("$URL", "r");
+                        $r = "";
+                        do {
                         $data = fread($file, 500);
-                        $json_output = simplexml_load_string($data);
-                        echo $json_output->LastPrice;
+                        $r .= $data;
+                        } while (strlen($data) != 0);
+
+                        $json = str_replace("\n", "", $r);
+                        $data = substr($json, 4, strlen($json) - 5);
+                        $json_output = json_decode($data, true);
+                        $currentStockVal = "\n" . $json_output['l'];
+                        echo $currentStockVal;
                     ?>$                   
                 </td>
-                <?php $LatestStockValue = floatval($json_output->LastPrice) * floatval($stock->shares);
+                <?php $LatestStockValue = floatval($currentStockVal) * floatval($stock->shares);
                       $GainorLoss = round($LatestStockValue - $StockValue,2);
                       $TotalGainorLoss =  round($TotalGainorLoss + $GainorLoss,2);?>
                 <?php $TotalStockValue = $TotalStockValue + $LatestStockValue; ?>                  

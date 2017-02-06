@@ -35,11 +35,19 @@
                 <td>Latest Stock Price</td>
                 <td>
                     <?php
-                        $URL = "http://dev.markitondemand.com/Api/v2/Quote?symbol=".urlencode($stock->symbol);
+                        $URL="http://finance.google.com/finance/info?client=ig&q=" . $stock->symbol;
                         $file = fopen("$URL", "r");
+                        $r = "";
+                        do {
                         $data = fread($file, 500);
-                        $json_output = simplexml_load_string($data);
-                        echo $json_output->LastPrice;  
+                        $r .= $data;
+                        } while (strlen($data) != 0);
+
+                        $json = str_replace("\n", "", $r);
+                        $data = substr($json, 4, strlen($json) - 5);
+                        $json_output = json_decode($data, true);
+                        $currentStockVal = "\n" . $json_output['l'];
+                        echo $currentStockVal;
                     ?>$                        
                 </td>
             </tr>
@@ -51,7 +59,7 @@
             </tr>
             <tr>
                 <!-- Doing some Calculation from the values obtained above to provide a detailed stock information. -->
-                <?php $LatestStockValue = round(floatval($stock['shares']) * floatval($json_output->LastPrice),2); 
+                <?php $LatestStockValue = round(floatval($stock['shares']) * floatval($currentStockVal),2); 
                       $GainorLoss = floatval($LatestStockValue) - floatval($var);?>
                 <td>Latest Stock Value</td>
                 <td><?php echo ($LatestStockValue); ?>$</td>
