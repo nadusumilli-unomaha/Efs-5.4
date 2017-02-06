@@ -82,19 +82,14 @@
                 <?php $StockValue = floatval($stock->purchase_price) * floatval($stock->shares);?>
                 <td>
                     <?php
-                        $options = array(
-                            'http' => array(
-                                'protocol_version' => '1.0',
-                                'method' => 'GET'
-                            )
-                        );
-                        $context = stream_context_create($options);
-                        $xmlurl = "http://dev.markitondemand.com/Api/v2/Quote?symbol=".urlencode($stock->symbol);
-                        $xml=simplexml_load_file($xmlurl);
-                        echo $xml->LastPrice;
+                        $URL = "http://dev.markitondemand.com/Api/v2/Quote?symbol=".urlencode($stock->symbol);
+                        $file = fopen("$URL", "r");
+                        $data = fread($file, 500);
+                        $json_output = simplexml_load_string($data);
+                        echo $json_output->LastPrice;
                     ?>$                   
                 </td>
-                <?php $LatestStockValue = floatval($xml->LastPrice) * floatval($stock->shares);
+                <?php $LatestStockValue = floatval($json_output->LastPrice) * floatval($stock->shares);
                       $GainorLoss = round($LatestStockValue - $StockValue,2);
                       $TotalGainorLoss =  round($TotalGainorLoss + $GainorLoss,2);?>
                 <?php $TotalStockValue = $TotalStockValue + $LatestStockValue; ?>                  
