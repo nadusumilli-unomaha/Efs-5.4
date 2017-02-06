@@ -63,9 +63,9 @@ class InvestmentController extends Controller
           'category' => 'required',
           'description' => '',
           'acquired_value' => 'required|numeric',
-          'acquired_date' => 'required',
+          'acquired_date' => 'required|date_format:Y-m-d',
           'recent_value' => 'required|numeric',
-          'recent_date' => 'required',
+          'recent_date' => 'required|date_format:Y-m-d',
       ]);
       $investment= new Investment($request->all());
       $investment->save();
