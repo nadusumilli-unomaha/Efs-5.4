@@ -51,14 +51,24 @@
                         <td>
                             <!-- Extracting stock price information from a website using in-built php functions. -->
                             <?php
-                                $xmlurl = "http://dev.markitondemand.com/Api/v2/Quote?symbol=".$stock->symbol;
-                                $xml=simplexml_load_file($xmlurl);
-                                echo $xml->LastPrice   
+                                $URL="http://finance.google.com/finance/info?client=ig&q=" . $stock->symbol;
+                                $file = fopen("$URL", "r");
+                                $r = "";
+                                do {
+                                $data = fread($file, 500);
+                                $r .= $data;
+                                } while (strlen($data) != 0);
+
+                                $json = str_replace("\n", "", $r);
+                                $data = substr($json, 4, strlen($json) - 5);
+                                $json_output = json_decode($data, true);
+                                $currentStockVal = "\n" . $json_output['l'];
+                                echo $currentStockVal;   
                             ?>$
                         </td>
                               <!-- Doing some Calculation from the values obtained above to provide a detailed stock information. -->
                               <?php $var = round(floatval($stock->purchase_price) * floatval($stock->shares),2);
-                              $LatestStockValue = round(floatval($stock->shares) * floatval($xml->LastPrice),2);
+                              $LatestStockValue = round(floatval($stock->shares) * floatval($currentStockVal),2);
                               $GainorLoss = round($LatestStockValue - $var,2);?>
                         <td>{{ $var }}$</td>
                         <td>{{ $GainorLoss }}$</td>
