@@ -1,4 +1,4 @@
-<p align="center"># EFS-5.4</p>
+# EFS-5.4
 <p>This is a laravel application to manage customer financial portfolio. This has been updated from the 5.3 version i had done in MSD.</p>
 
 <p align="center"><img src="https://laravel.com/assets/img/components/logo-laravel.svg"></p>
