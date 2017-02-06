@@ -109,17 +109,17 @@ class CustomerController extends Controller
 
     public function stringify($id)
     {
-      if(Auth::check){
+      //if(Auth::check){
        // $customer=Customer::where('id', $id)->select('customer_id','name','address','city','state','zip','home_phone','cell_phone')->first();
    
       $customer = Customer::where('cust_number', $id)->select('cust_number','name','address','city','state','zip','home_phone','cell_phone')->first();
       $customer = $customer->toArray();
       return response()->json($customer);
-      }
-      else
-      {
-         session()->flash('cust_edit_msg', 'You do not have permissions to access JSON!.');
-        return redirect('customers');
-      }
+      // }
+      // else
+      // {
+      //    session()->flash('cust_edit_msg', 'You do not have permissions to access JSON!.');
+      //   return redirect('customers');
+      // }
     }
 }
